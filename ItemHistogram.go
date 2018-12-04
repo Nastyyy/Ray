@@ -4,14 +4,15 @@ package main
 // data recieved from Steam's Market API for a specific item.
 // It also represents the data stored in the database.
 type ItemHistogram struct {
-	BuyOrderListings  int
-	SellOrderListings int
-	BuyOrderGraph     []Listing
-	SellOrderGraph    []Listing
+	UID               string    `json:"uid,omitempty"`
+	BuyOrderListings  int       `json:"buyorderlistings,omitempty"`
+	SellOrderListings int       `json:"sellorderlisitings,omitempty"`
+	BuyOrderGraph     []Listing `json:"buyordergraph,omitempty"`
+	SellOrderGraph    []Listing `json:"sellordergprah,omitempty"`
 }
 
 // Listing is a representation of each buy/sell listing from a histogram of a given item
 type Listing struct {
-	Price         float64
-	AmountAtPrice int
+	Price         float64 `json:"price,omitempty"`
+	AmountAtPrice int     `json:"amountatprice,omitempty"`
 }
