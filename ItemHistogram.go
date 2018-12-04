@@ -6,8 +6,8 @@ package main
 type ItemHistogram struct {
 	BuyOrderListings  int
 	SellOrderListings int
-	BuyOrderGraph     []*Listing
-	SellOrderGraph    []*Listing
+	BuyOrderGraph     []Listing
+	SellOrderGraph    []Listing
 }
 
 // Listing is a representation of each buy/sell listing from a histogram of a given item

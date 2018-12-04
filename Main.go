@@ -32,9 +32,9 @@ func main() {
 	// TODO: Last step is store in database somehow
 }
 
-func printAllListings(l []*Listing) {
+func printAllListings(l []Listing) {
 	for i := 0; i < len(l); i++ {
-		fmt.Println(*l[i])
+		fmt.Println(l[i])
 	}
 }
 

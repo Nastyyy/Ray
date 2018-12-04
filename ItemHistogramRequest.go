@@ -67,8 +67,8 @@ func createItemHistogram(itemHistogramJSON *ItemHistogramJSON) *ItemHistogram {
 // the BuyOrderGraph and SellOrderGraph of an ItemHistogram.
 // This function is definitely confusing and needs to be refactored to
 // be more clear and maintainable.
-func createOrderGraph(orderGraph [][]interface{}) []*Listing {
-	orderListings := make([]*Listing, len(orderGraph))
+func createOrderGraph(orderGraph [][]interface{}) []Listing {
+	orderListings := make([]Listing, len(orderGraph))
 	for i := 0; i < len(orderGraph); i++ {
 		var amountAtPrice int
 		currentListing := orderGraph[i]
@@ -82,7 +82,7 @@ func createOrderGraph(orderGraph [][]interface{}) []*Listing {
 		}
 
 		listing := Listing{Price: price, AmountAtPrice: amountAtPrice}
-		orderListings[i] = &listing
+		orderListings[i] = listing
 	}
 	return orderListings
 }
