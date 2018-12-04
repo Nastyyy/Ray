@@ -8,12 +8,20 @@ import (
 
 func getItemIDs() []string {
 	// This is placeholder now for testing
-	itemIDs := []string{
+	var itemIDs []string
+	if devMode {
+		itemIDs = []string{
+			"176023336",
+		}
+	}
+	itemIDs = []string{
 		"176023336",
 		"176023393",
 		"176023410",
 		"176023166",
-		"176023340"}
+		"176023340",
+	}
+
 	return itemIDs
 }
 

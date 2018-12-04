@@ -32,14 +32,14 @@ func main() {
 	// TODO: Last step is store in database somehow
 }
 
-func printAllListings(l []Listing) {
-	for i := 0; i < len(l); i++ {
-		fmt.Println(l[i])
-	}
-}
-
 func getItemRequestName(itemName string) string {
 	replacer := strings.NewReplacer(" ", "%20", "|", "%7C", "(", "%28", ")", "%29")
 	newItemName := replacer.Replace(itemName)
 	return newItemName
+}
+
+func printAllListings(l []Listing) {
+	for i := 0; i < len(l); i++ {
+		fmt.Println(l[i])
+	}
 }
