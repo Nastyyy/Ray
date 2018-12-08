@@ -12,8 +12,6 @@ import (
 	"google.golang.org/grpc"
 )
 
-var devMode = true
-
 // ItemRequest is the data needed to make a request to Steam Market API
 type ItemRequest struct {
 	appID    string
@@ -36,6 +34,7 @@ func main() {
 			time.Sleep(5000000000)
 		}
 	*/
+	itemHistogram := GetMarketHistogram("176023336")
 
 	dg := newClient()
 
@@ -51,9 +50,6 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	itemHistogram := GetMarketHistogram("176023336")
-	printAllListings(itemHistogram.BuyOrderGraph)
 
 	mu := &api.Mutation{
 		CommitNow: true,
