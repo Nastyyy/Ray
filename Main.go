@@ -1,15 +1,10 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
-
-	"github.com/dgraph-io/dgo"
-	"github.com/dgraph-io/dgo/protos/api"
-	"google.golang.org/grpc"
+	"time"
 )
 
 // ItemRequest is the data needed to make a request to Steam Market API
@@ -19,68 +14,29 @@ type ItemRequest struct {
 }
 
 func main() {
-	/*
-		requestItems := getItemIDs()
-
-		for i := 0; i < len(requestItems); i++ {
-			itemHistogram := GetMarketHistogram(requestItems[i])
-
-			printAllListings(itemHistogram.SellOrderGraph)
-			fmt.Println("----------------------------------------------------------")
-			printAllListings(itemHistogram.BuyOrderGraph)
-
-			//	Evalutates to 3 seconds. Steam rate limits to 20 requests/minute
-			time.Sleep(5000000000)
-		}
-	*/
-	itemHistogram := GetMarketHistogram("176023336")
 	dg := newClient()
-
-	op := &api.Operation{}
-	op.DropAll = true
-	op.Schema = `
-	buyorderlisitings: int . @index(exact)
-	sellorderlistings: int .
-	`
-	ctx := context.Background()
-	err := dg.Alter(ctx, op)
-	if err != nil {
-		log.Fatal(err)
+	if drop && devMode {
+		err := dropDB(dg)
+		if err != nil {
+			log.Fatalf("Error dropping database: %v", err)
+		}
 	}
+	requestItems := getItemIDs()
 
-	mu := &api.Mutation{
-		CommitNow: true,
+	for i := 0; i < len(requestItems); i++ {
+		itemHistogram := GetMarketHistogram(requestItems[i])
+		assigned := InsertIntoDB(dg, itemHistogram)
+		fmt.Println(assigned.Uids["blank-0"])
+
+		//	Evalutates to 3 seconds. Steam rate limits to 20 requests/minute
+		time.Sleep(5000000000)
 	}
-
-	pb, err := json.Marshal(itemHistogram)
-	if err != nil {
-		log.Fatalf("Error marshaling item: %v", err)
-	}
-
-	mu.SetJson = pb
-	assigned, err := dg.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatalf("Error doing mutation: %v", err)
-	}
-
-	fmt.Println(assigned.Uids["blank-0"])
 }
 
 func getItemRequestName(itemName string) string {
 	replacer := strings.NewReplacer(" ", "%20", "|", "%7C", "(", "%28", ")", "%29")
 	newItemName := replacer.Replace(itemName)
 	return newItemName
-}
-
-func newClient() *dgo.Dgraph {
-	dial, err := grpc.Dial("localhost:9080", grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("Error dialing gRPC: %v", err)
-	}
-
-	return dgo.NewDgraphClient(
-		api.NewDgraphClient(dial),
-	)
 }
 
 func printAllListings(l []Listing) {

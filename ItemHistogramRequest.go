@@ -36,7 +36,7 @@ func GetMarketHistogram(itemID string) *ItemHistogram {
 		reqURL = "https://steamcommunity.com/market/itemordershistogram?country=US&language=english&currency=1&item_nameid=" + itemID
 	}
 
-	itemByteData := doMarketRequest(reqURL)
+	itemByteData := DoMarketRequest(reqURL)
 	itemHistogramJSON := requestJSONtoStruct(*itemByteData)
 	itemHistogram := createItemHistogram(itemHistogramJSON)
 

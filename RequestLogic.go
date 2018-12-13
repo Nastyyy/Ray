@@ -27,7 +27,7 @@ func getItemIDs() []string {
 
 // doMarketRequest is the generic function for making any item request to
 // Steam's market API (itemhistogram, search, listing, etc...).
-func doMarketRequest(reqURL string) *[]byte {
+func DoMarketRequest(reqURL string) *[]byte {
 	resp, err := http.Get(reqURL)
 	if err != nil {
 		log.Fatal(err)
