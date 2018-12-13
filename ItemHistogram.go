@@ -8,7 +8,7 @@ type ItemHistogram struct {
 	BuyOrderListings  int       `json:"buyorderlistings,omitempty"`
 	SellOrderListings int       `json:"sellorderlisitings,omitempty"`
 	BuyOrderGraph     []Listing `json:"buyordergraph,omitempty"`
-	SellOrderGraph    []Listing `json:"sellordergprah,omitempty"`
+	SellOrderGraph    []Listing `json:"sellordergraph,omitempty"`
 }
 
 // Listing is a representation of each buy/sell listing from a histogram of a given item
