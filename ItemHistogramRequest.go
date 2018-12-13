@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 )
 
@@ -36,8 +35,6 @@ func GetMarketHistogram(itemID string) *ItemHistogram {
 		// Steam's endpoint for histogram of item (recieves JSON)
 		reqURL = "https://steamcommunity.com/market/itemordershistogram?country=US&language=english&currency=1&item_nameid=" + itemID
 	}
-
-	fmt.Println(reqURL)
 
 	itemByteData := doMarketRequest(reqURL)
 	itemHistogramJSON := requestJSONtoStruct(*itemByteData)
