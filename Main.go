@@ -19,7 +19,6 @@ type ItemRequest struct {
 }
 
 func main() {
-	// Change
 	/*
 		requestItems := getItemIDs()
 
@@ -35,7 +34,6 @@ func main() {
 		}
 	*/
 	itemHistogram := GetMarketHistogram("176023336")
-
 	dg := newClient()
 
 	op := &api.Operation{}
@@ -44,7 +42,6 @@ func main() {
 	buyorderlisitings: int . @index(exact)
 	sellorderlistings: int .
 	`
-
 	ctx := context.Background()
 	err := dg.Alter(ctx, op)
 	if err != nil {
@@ -67,8 +64,6 @@ func main() {
 	}
 
 	fmt.Println(assigned.Uids["blank-0"])
-
-	// TODO: Last step is store in database somehow
 }
 
 func getItemRequestName(itemName string) string {
@@ -78,13 +73,13 @@ func getItemRequestName(itemName string) string {
 }
 
 func newClient() *dgo.Dgraph {
-	d, err := grpc.Dial("localhost:9080", grpc.WithInsecure())
+	dial, err := grpc.Dial("localhost:9080", grpc.WithInsecure())
 	if err != nil {
 		log.Fatalf("Error dialing gRPC: %v", err)
 	}
 
 	return dgo.NewDgraphClient(
-		api.NewDgraphClient(d),
+		api.NewDgraphClient(dial),
 	)
 }
 
