@@ -25,6 +25,7 @@ func main() {
 
 	for i := 0; i < len(requestItems); i++ {
 		itemHistogram := GetMarketHistogram(requestItems[i])
+		itemHistogram.ItemNameID = requestItems[i]
 		assigned := InsertIntoDB(dg, itemHistogram)
 		fmt.Println(assigned.Uids["blank-0"])
 

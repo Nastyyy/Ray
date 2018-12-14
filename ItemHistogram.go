@@ -5,6 +5,7 @@ package main
 // It also is what is stored in the database.
 type ItemHistogram struct {
 	UID               string    `json:"uid,omitempty"`
+	ItemNameID        string    `json:"item_name_id,omitempty"`
 	BuyOrderListings  int       `json:"buy_order_listings,omitempty"`
 	SellOrderListings int       `json:"sell_order_lisitings,omitempty"`
 	BuyOrderGraph     []Listing `json:"buy_order_graph,omitempty"`
