@@ -25,7 +25,7 @@ func getItemIDs() []string {
 	return itemIDs
 }
 
-// doMarketRequest is the generic function for making any item request to
+// DoMarketRequest is the generic function for making any item request to
 // Steam's market API (itemhistogram, search, listing, etc...).
 func DoMarketRequest(reqURL string) *[]byte {
 	resp, err := http.Get(reqURL)
