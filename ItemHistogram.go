@@ -2,7 +2,7 @@ package main
 
 // ItemHistogram is a object representation of the current market
 // data recieved from Steam's Market API for a specific item.
-// It also represents the data stored in the database.
+// It also is what is stored in the database.
 type ItemHistogram struct {
 	UID               string    `json:"uid,omitempty"`
 	BuyOrderListings  int       `json:"buy_order_listings,omitempty"`
