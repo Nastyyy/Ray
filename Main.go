@@ -15,7 +15,7 @@ type ItemRequest struct {
 
 func main() {
 	dg := newClient()
-	if drop && devMode {
+	if drop {
 		err := dropDB(dg)
 		if err != nil {
 			log.Fatalf("Error dropping database: %v", err)
@@ -24,8 +24,11 @@ func main() {
 	requestItems := getItemIDs()
 
 	for i := 0; i < len(requestItems); i++ {
-		itemHistogram := GetMarketHistogram(requestItems[i])
-		itemHistogram.ItemNameID = requestItems[i]
+		itemHistogram := GetMarketHistogram(requestItems[i][0])
+		itemHistogram.ItemNameID = requestItems[i][0]
+		itemHistogram.ItemName = requestItems[i][1]
+		currentTime := time.Now()
+		itemHistogram.Timestamp = &currentTime
 		assigned := InsertIntoDB(dg, itemHistogram)
 		fmt.Println(assigned.Uids["blank-0"])
 
