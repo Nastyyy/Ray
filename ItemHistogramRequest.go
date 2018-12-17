@@ -56,9 +56,10 @@ func requestJSONtoStruct(itemByteData []byte) *ItemHistogramJSON {
 }
 
 func createItemHistogram(itemHistogramJSON *ItemHistogramJSON) *ItemHistogram {
-	itemHistogram := ItemHistogram{BuyOrderListings: len(itemHistogramJSON.BuyOrderGraph), SellOrderListings: len(itemHistogramJSON.SellOrderGraph)}
-	itemHistogram.BuyOrderGraph = createOrderGraph(itemHistogramJSON.BuyOrderGraph)
-	itemHistogram.SellOrderGraph = createOrderGraph(itemHistogramJSON.SellOrderGraph)
+	marketData := MarketData{BuyOrderListings: len(itemHistogramJSON.BuyOrderGraph), SellOrderListings: len(itemHistogramJSON.SellOrderGraph)}
+	itemHistogram := ItemHistogram{MarketData: marketData}
+	itemHistogram.MarketData.BuyOrderGraph = createOrderGraph(itemHistogramJSON.BuyOrderGraph)
+	itemHistogram.MarketData.SellOrderGraph = createOrderGraph(itemHistogramJSON.SellOrderGraph)
 
 	return &itemHistogram
 }
