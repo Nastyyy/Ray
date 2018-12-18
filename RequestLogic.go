@@ -6,20 +6,20 @@ import (
 	"net/http"
 )
 
-func getItemIDs() []string {
+func getItemIDs() [][]string {
 	// This is placeholder now for testing
-	var itemIDs []string
+	var itemIDs [][]string
 	if devMode {
-		itemIDs = []string{
-			"176023336",
+		itemIDs = [][]string{
+			{"176023336", "Axe"},
 		}
 	}
-	itemIDs = []string{
-		"176023336",
-		"176023393",
-		"176023410",
-		"176023166",
-		"176023340",
+	itemIDs = [][]string{
+		{"176023336", "Axe"},
+		{"176023350", "Emissary of the Quorum"},
+		{"176023393", "Annihilation"},
+		{"176023410", "Time of Triumph"},
+		{"176023166", "Blink Dagger"},
 	}
 
 	return itemIDs
