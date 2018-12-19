@@ -56,10 +56,10 @@ func requestJSONtoStruct(itemByteData []byte) *ItemHistogramJSON {
 }
 
 func createItemHistogram(itemHistogramJSON *ItemHistogramJSON) *ItemHistogram {
-	marketData := MarketData{BuyOrderListings: len(itemHistogramJSON.BuyOrderGraph), SellOrderListings: len(itemHistogramJSON.SellOrderGraph)}
+	buyOrderGraph := OrderGraph{OrderListings: len(itemHistogramJSON.BuyOrderGraph), Listings: createOrderGraph(itemHistogramJSON.BuyOrderGraph)}
+	sellOrderGraph := OrderGraph{OrderListings: len(itemHistogramJSON.SellOrderGraph), Listings: createOrderGraph(itemHistogramJSON.SellOrderGraph)}
+	marketData := MarketData{BuyOrderGraph: buyOrderGraph, SellOrderGraph: sellOrderGraph}
 	itemHistogram := ItemHistogram{MarketData: marketData}
-	itemHistogram.MarketData.BuyOrderGraph = createOrderGraph(itemHistogramJSON.BuyOrderGraph)
-	itemHistogram.MarketData.SellOrderGraph = createOrderGraph(itemHistogramJSON.SellOrderGraph)
 
 	return &itemHistogram
 }
@@ -72,8 +72,10 @@ func createOrderGraph(orderGraph [][]interface{}) []Listing {
 	orderListings := make([]Listing, len(orderGraph))
 	for i := 0; i < len(orderGraph); i++ {
 		var amountAtPrice int
+		listing := Listing{}
 		currentListing := orderGraph[i]
-		price := orderGraph[i][0].(float64)
+		listing.Price = orderGraph[i][0].(float64)
+		listing.CumulativeListings = int(currentListing[1].(float64))
 
 		if i != 0 {
 			previousListing := orderGraph[i-1]
@@ -82,7 +84,7 @@ func createOrderGraph(orderGraph [][]interface{}) []Listing {
 			amountAtPrice = int(currentListing[i].(float64))
 		}
 
-		listing := Listing{Price: price, AmountAtPrice: amountAtPrice}
+		listing.AmountAtPrice = amountAtPrice
 		orderListings[i] = listing
 	}
 	return orderListings

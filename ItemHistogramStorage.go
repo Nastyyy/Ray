@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"encoding/json"
 	"log"
 
 	"github.com/dgraph-io/dgo"
@@ -23,24 +22,31 @@ func newClient() *dgo.Dgraph {
 	)
 }
 
-// InsertIntoDB is the logic behind how an ItemHistogram gets stored into a database solution.
-// Currently it stores into a dgraph database.
-func InsertIntoDB(dg *dgo.Dgraph, item *ItemHistogram) *api.Assigned {
-	ctx := context.Background()
+// AlterSchema changes the schema for a dgraph database with a given schema parameter
+func AlterSchema(dg *dgo.Dgraph, ctx *context.Context, schema *string) error {
+	op := &api.Operation{}
+	op.Schema = *schema
+	err := dg.Alter(*ctx, op)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+/*
+func CreateGameData(dg *dgo.Dgraph, ctx *context.Context, gameData *GameData) {
 	mu := &api.Mutation{
 		CommitNow: true,
 	}
 
-	itemJSON, err := json.Marshal(item)
+	gameDataJSON, err := json.Marshal(gameData)
 	if err != nil {
-		log.Fatalf("Error marshaling item: %v", err)
+		log.Fatalf(err)
 	}
-
-	mu.SetJson = itemJSON
-	assigned, err := dg.NewTxn().Mutate(ctx, mu)
-	if err != nil {
-		log.Fatalf("Error doing mutation: %v", err)
-	}
-
-	return assigned
+	mu.= `
+	_:artifact <name> "Artifact" .
+	_:artifact <id> "" .
+	`
+	assinged, err := dg.NewTxn().Mutate(*ctx, mu)
 }
+*/
