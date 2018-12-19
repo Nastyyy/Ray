@@ -31,13 +31,20 @@ func main() {
 	}
 	requestItems := getItemIDs()
 
+	game := GameItem{GameID: "1111", GameName: "Artifact"}
+	gameAssigned, err := game.InsertGameIntoDB(dg)
+	if err != nil {
+		log.Fatalf("Error creating game item: %v", err)
+	}
+
 	for i := 0; i < len(requestItems); i++ {
+
 		itemHistogram := GetMarketHistogram(requestItems[i][0])
 		itemHistogram.ItemNameID = requestItems[i][0]
 		itemHistogram.ItemName = requestItems[i][1]
 		currentTime := time.Now()
 		itemHistogram.Timestamp = &currentTime
-		itemHistogram.GameData = ItemGameData{GameID: "111", GameName: "Artifact"}
+		itemHistogram.GameData = ItemGameData{UID: gameAssigned.Uids["blank-0"]}
 
 		assigned, err := itemHistogram.InsertIntoDB(dg, &ctx)
 		if err != nil {

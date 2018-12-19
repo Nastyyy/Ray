@@ -41,8 +41,7 @@ type Listing struct {
 
 // ItemGameData is a represenatation of a given item's game data
 type ItemGameData struct {
-	GameName string `json:"game_name,omitempty"`
-	GameID   string `json:"game_id,omitempty"`
+	UID string `json:"uid,omitempty"`
 }
 
 // InsertIntoDB is the logic behind how an ItemHistogram gets stored into a database solution.
@@ -77,6 +76,7 @@ func (item *ItemHistogram) getSchema() string {
 	schema := `
 	item_name: string @index(exact) .
 	price: float .
+	game_data: uid @reverse .
 	`
 	return schema
 }
