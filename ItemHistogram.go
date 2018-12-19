@@ -76,7 +76,6 @@ func (item *ItemHistogram) getSchema() string {
 	schema := `
 	item_name: string @index(exact) .
 	price: float .
-	game_data: uid @reverse .
 	`
 	return schema
 }
