@@ -39,7 +39,8 @@ type Listing struct {
 	CumulativeListings int     `json:"cumulative_listings"`
 }
 
-// ItemGameData is a represenatation of a given item's game data
+// ItemGameData is a struct that holds a UID for a GameItem that's been stored
+// in the database already. This avoids creating lots of duplicate data
 type ItemGameData struct {
 	UID string `json:"uid,omitempty"`
 }
