@@ -12,3 +12,5 @@ def getCards(start):
     for item in data['results']:
         total += 1
         print(item['app_name'], item['asset_description']['appid']," - ", item['name'], item['hash_name'])
+
+getCards(0)
