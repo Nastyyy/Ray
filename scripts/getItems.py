@@ -2,7 +2,7 @@ import requests
 import json
 
 def getCards(start):
-    url = 'https://steamcommunity.com/market/search/render/?norender=1&appid=583950&count=100&start=' + str(start)
+    url = f"https://steamcommunity.com/market/search/render/?norender=1&appid=583950&count=100&start=0"
 
     resp = requests.get(url)
     data = resp.json()
