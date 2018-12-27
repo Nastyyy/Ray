@@ -11,11 +11,11 @@ import (
 // GameItem is a representation of a game on Steam's market
 type GameItem struct {
 	GameName string `json:"game_name,omitempty"`
-	GameID   string `json:"game_id,omitempty"`
+	GameID   int    `json:"game_id,omitempty"`
 }
 
 // InsertGameIntoDB is the logic to store a GameItem into the database (currently dgraph)
-func (item *GameItem) InsertGameIntoDB(dg *dgo.Dgraph) (*api.Assigned, error) {
+func (item *GameItem) InsertIntoDB(dg *dgo.Dgraph) (*api.Assigned, error) {
 	item.setSchema(dg)
 
 	mu := &api.Mutation{

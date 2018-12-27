@@ -1,28 +1,48 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-func getItemIDs() [][]string {
-	// This is placeholder now for testing
-	var itemIDs [][]string
-	if devMode {
-		itemIDs = [][]string{
-			{"176023336", "Axe"},
+// RequestItem is a representation of what is
+// stored in a json file for requesting items from Steam's Market API
+type RequestItem struct {
+	Name     string `json:"name"`
+	HashName string `json:"hash_name"`
+	NameID   string `json:"item_name_id"`
+	AppName  string `json:"app_name"`
+	AppID    int    `json:"appid"`
+}
+
+func getItemIDs(path string) []*RequestItem {
+	itemJSON := getJSONFromFile(path)
+	var retItems []*RequestItem
+
+	for _, item := range *itemJSON {
+		requestItem := RequestItem{
+			Name:     item.(map[string]interface{})["name"].(string),
+			HashName: item.(map[string]interface{})["hash_name"].(string),
+			NameID:   item.(map[string]interface{})["item_name_id"].(string),
+			AppName:  item.(map[string]interface{})["app_name"].(string),
+			AppID:    int(item.(map[string]interface{})["appid"].(float64)),
 		}
-	}
-	itemIDs = [][]string{
-		{"176023336", "Axe"},
-		{"176023350", "Emissary of the Quorum"},
-		{"176023393", "Annihilation"},
-		{"176023410", "Time of Triumph"},
-		{"176023166", "Blink Dagger"},
+		retItems = append(retItems, &requestItem)
 	}
 
-	return itemIDs
+	return retItems
+}
+
+func getJSONFromFile(path string) *[]interface{} {
+	data, err := ioutil.ReadFile(path)
+	var itemJSON []interface{}
+	err = json.Unmarshal(data, &itemJSON)
+	if err != nil {
+		log.Fatalf("Error unmarshaling JSON from %s \n %v", path, err)
+	}
+	return &itemJSON
 }
 
 // DoMarketRequest is the generic function for making any item request to

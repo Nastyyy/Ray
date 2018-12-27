@@ -11,13 +11,14 @@ import (
 
 // ItemHistogram is a object representation of the current market
 // data recieved from Steam's Market API for a specific item.
-// It also is what is stored in the database.
+// It also represents how the data is stored in the database.
 type ItemHistogram struct {
-	ItemNameID string       `json:"item_name_id,omitempty"`
-	ItemName   string       `json:"item_name,omitempty"`
-	Timestamp  *time.Time   `json:"timestamp,omitempty"`
-	MarketData MarketData   `json:"market_data,omitempty"`
-	GameData   ItemGameData `json:"game_data,omitempty"`
+	ItemNameID   string       `json:"item_name_id,omitempty"`
+	ItemName     string       `json:"item_name,omitempty"`
+	ItemHashName string       `json:"item_hash_name,omitempty"`
+	Timestamp    *time.Time   `json:"timestamp,omitempty"`
+	MarketData   MarketData   `json:"market_data,omitempty"`
+	GameData     ItemGameData `json:"game_data,omitempty"`
 }
 
 // MarketData is a representation of the market data for a given steam item
@@ -28,8 +29,8 @@ type MarketData struct {
 
 // OrderGraph represents a buy or sell order graph given by Steam for a given item
 type OrderGraph struct {
-	OrderListings int       `json:"total_listings,omitempty"`
-	Listings      []Listing `json:"listings,omitempty"`
+	OrderListings int        `json:"total_listings,omitempty"`
+	Listings      []*Listing `json:"listings,omitempty"`
 }
 
 // Listing is a representation of each buy/sell listing from a histogram of a given item

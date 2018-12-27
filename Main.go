@@ -4,44 +4,38 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 	"time"
+
+	"github.com/dgraph-io/dgo"
+	"github.com/dgraph-io/dgo/protos/api"
+	"google.golang.org/grpc"
 )
 
-// ItemRequest is the data needed to make a request to Steam Market API
-type ItemRequest struct {
-	appID    string
-	itemName string
-}
-
-// GameData is a representation of a given item's game that it belongs to
-type GameData struct {
-	GameID   string `json:"game_id,omitempty"`
-	GameName string `json:"game_name,omitempty"`
-}
+const dataPath = "scripts/game_data/artifact.json"
 
 func main() {
-	dg := newClient()
+	items := getItemIDs(dataPath)
+	dg := newDgraphClient("localhost:9080")
 	ctx := context.Background()
+
 	if drop {
 		err := dropDB(dg, &ctx)
 		if err != nil {
 			log.Fatalf("Error dropping database: %v", err)
 		}
 	}
-	requestItems := getItemIDs()
 
-	game := GameItem{GameID: "1111", GameName: "Artifact"}
-	gameAssigned, err := game.InsertGameIntoDB(dg)
+	game := GameItem{GameID: items[0].AppID, GameName: items[0].AppName}
+	gameAssigned, err := game.InsertIntoDB(dg)
 	if err != nil {
-		log.Fatalf("Error creating game item: %v", err)
+		log.Fatalf("Error inserting game into db: %v", err)
 	}
 
-	for i := 0; i < len(requestItems); i++ {
-
-		itemHistogram := GetMarketHistogram(requestItems[i][0])
-		itemHistogram.ItemNameID = requestItems[i][0]
-		itemHistogram.ItemName = requestItems[i][1]
+	for _, item := range items {
+		itemHistogram := GetMarketHistogram(item.NameID)
+		itemHistogram.ItemNameID = item.NameID
+		itemHistogram.ItemName = item.Name
+		itemHistogram.ItemHashName = item.HashName
 		currentTime := time.Now()
 		itemHistogram.Timestamp = &currentTime
 		itemHistogram.GameData = ItemGameData{UID: gameAssigned.Uids["blank-0"]}
@@ -51,21 +45,23 @@ func main() {
 			fmt.Printf("Unable to insert %s into database: %v", itemHistogram.ItemName, err)
 		}
 
-		fmt.Println(assigned.Uids["blank-0"])
+		//fmt.Println(assigned.Uids["blank-0"])
+		fmt.Println(itemHistogram.ItemName, "- inserted into DB:", assigned.Uids["blank-0"])
 
 		//	Evalutates to 3 seconds. Steam rate limits to 20 requests/minute
 		time.Sleep(5000000000)
 	}
+
+	fmt.Println("************************* Process done *************************")
 }
 
-func getItemRequestName(itemName string) string {
-	replacer := strings.NewReplacer(" ", "%20", "|", "%7C", "(", "%28", ")", "%29")
-	newItemName := replacer.Replace(itemName)
-	return newItemName
-}
-
-func printAllListings(l []Listing) {
-	for i := 0; i < len(l); i++ {
-		fmt.Println(l[i])
+func newDgraphClient(ip string) *dgo.Dgraph {
+	dial, err := grpc.Dial(ip, grpc.WithInsecure())
+	if err != nil {
+		log.Fatalf("Error dialing gRPC: %v", err)
 	}
+
+	return dgo.NewDgraphClient(
+		api.NewDgraphClient(dial),
+	)
 }

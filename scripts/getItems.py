@@ -1,5 +1,6 @@
 import requests
 import json
+import random
 from math import floor
 from time import sleep
 
@@ -10,10 +11,8 @@ from time import sleep
 
 def requestItems(appid, count, start):
     url = f"https://steamcommunity.com/market/search/render/?norender=1&appid={appid}&count={count}&start={start}"
-
     resp = requests.get(url)
     data = resp.json()
-
     return data
 
 def getAllItems(appid):
@@ -28,14 +27,42 @@ def getAllItems(appid):
             items.append(reqItems['results'])
             i+=1
             sleep(3)
+        if (initRequest['total_count'] - (requestsToDo * 100)) > 0:
+            remainderItems = requestItems(appid, initRequest['total_count'] % 100, requestsToDo*100)
+            items.append(remainderItems['results'])
     return items
 
+def getItemNameId(appid, hash_name):
+    targetString = "Market_LoadOrderSpread("
+    r = requests.get(f'https://steamcommunity.com/market/listings/{appid}/{hash_name}')
+    if r.status_code == 429:
+        print("Too many requests detected, sleeping for 5 minutes...")
+        sleep(300)
+        r = requests.get(f'https://steamcommunity.com/market/listings/{appid}/{hash_name}')
+    target = r.text.find(targetString)
+    return r.text[target+24:target+33]
 
-def printItems(items):
-    for item in items['results']:
-        if item['asset_description']['marketable'] != 1:
-                print(f"{item['app_name']} not marketable")
+itemRequests = getAllItems("583950")
+total = 0
+allItems = []
 
-        print(item['app_name'], item['asset_description']['appid']," - ", item['name'], item['hash_name'])
+reset = 0
+for request in itemRequests:
+    for item in request:
+        storeItem = {
+            "name": item['name'],
+            "hash_name": item['hash_name'],
+            "item_name_id": getItemNameId(item['asset_description']['appid'], item['hash_name']),
+            "app_name": item['app_name'],
+            "appid": item['asset_description']['appid']
+        } 
+        allItems.append(storeItem)
+        print(f"{storeItem['name']} - {storeItem['item_name_id']}: Completed")
+        #sleep(random.randint(2, 6))
+        total += 1
 
-print(getAllItems("583950"))
+itemJSON = json.dumps(allItems)
+f = open("item_data.json", "w")
+f.write(itemJSON)
+f.close()
+print("Process complete")
