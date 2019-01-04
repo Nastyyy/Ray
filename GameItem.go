@@ -14,7 +14,7 @@ type GameItem struct {
 	GameID   int    `json:"game_id,omitempty"`
 }
 
-// InsertGameIntoDB is the logic to store a GameItem into the database (currently dgraph)
+// InsertIntoDB is the logic to store a GameItem into the database (currently dgraph)
 func (item *GameItem) InsertIntoDB(dg *dgo.Dgraph) (*api.Assigned, error) {
 	item.setSchema(dg)
 
