@@ -32,12 +32,12 @@ func main() {
 	}
 
 	for _, item := range items {
+		startTime := time.Now()
 		itemHistogram := GetMarketHistogram(item.NameID)
 		itemHistogram.ItemNameID = item.NameID
 		itemHistogram.ItemName = item.Name
 		itemHistogram.ItemHashName = item.HashName
-		currentTime := time.Now()
-		itemHistogram.Timestamp = &currentTime
+		itemHistogram.Timestamp = &startTime
 		itemHistogram.GameData = ItemGameData{UID: gameAssigned.Uids["blank-0"]}
 
 		assigned, err := itemHistogram.InsertIntoDB(dg, &ctx)
@@ -45,11 +45,10 @@ func main() {
 			fmt.Printf("Unable to insert %s into database: %v", itemHistogram.ItemName, err)
 		}
 
-		//fmt.Println(assigned.Uids["blank-0"])
-		fmt.Println(itemHistogram.ItemName, "- inserted into DB:", assigned.Uids["blank-0"])
+		endTime := time.Now()
+		fmt.Println(itemHistogram.ItemName, "- inserted into DB:", assigned.Uids["blank-0"], "| Process took:", endTime.Sub(startTime))
 
-		//	Evalutates to 3 seconds. Steam rate limits to 20 requests/minute
-		time.Sleep(5000000000)
+		time.Sleep(time.Second * 3)
 	}
 
 	fmt.Println("************************* Process done *************************")
