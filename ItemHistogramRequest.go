@@ -81,7 +81,7 @@ func createOrderGraph(orderGraph [][]interface{}) []*Listing {
 			previousListing := orderGraph[i-1]
 			amountAtPrice = int(currentListing[1].(float64)) - int(previousListing[1].(float64))
 		} else {
-			amountAtPrice = int(currentListing[i].(float64))
+			amountAtPrice = int(currentListing[1].(float64))
 		}
 
 		listing.AmountAtPrice = amountAtPrice
