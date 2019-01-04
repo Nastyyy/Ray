@@ -36,8 +36,9 @@ def getItemNameId(appid, hash_name):
     targetString = "Market_LoadOrderSpread("
     r = requests.get(f'https://steamcommunity.com/market/listings/{appid}/{hash_name}')
     if r.status_code == 429:
-        print("Too many requests detected, sleeping for 5 minutes...")
-        sleep(300)
+        sleepTime = 60 * 3
+        print(f"Too many requests detected, sleeping for {sleepTime/60} minutes...")
+        sleep(sleepTime)
         r = requests.get(f'https://steamcommunity.com/market/listings/{appid}/{hash_name}')
     target = r.text.find(targetString)
     return r.text[target+24:target+33]
