@@ -18,13 +18,6 @@ func main() {
 	dg := newDgraphClient("localhost:9080")
 	ctx := context.Background()
 
-	if drop {
-		err := dropDB(dg, &ctx)
-		if err != nil {
-			log.Fatalf("Error dropping database: %v", err)
-		}
-	}
-
 	game := GameItem{GameID: items[0].AppID, GameName: items[0].AppName}
 	gameAssigned, err := game.InsertIntoDB(dg)
 	if err != nil {
