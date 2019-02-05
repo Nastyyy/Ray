@@ -11,7 +11,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-const dataPath = "scripts/game_data/alpha_artifact.json"
+const dataPath = "scripts/game_data/artifact.json"
 
 func main() {
 	items := getItemIDs(dataPath)
@@ -24,8 +24,10 @@ func main() {
 		log.Fatalf("Error inserting game into db: %v", err)
 	}
 
+	startTime := time.Now()
+
 	for _, item := range items {
-		startTime := time.Now()
+		timestamp := time.Now()
 		itemHistogram := GetMarketHistogram(item.NameID)
 		itemHistogram.ItemNameID = item.NameID
 		itemHistogram.ItemName = item.Name
@@ -39,12 +41,10 @@ func main() {
 		}
 
 		endTime := time.Now()
-		fmt.Println(itemHistogram.ItemName, "- inserted into DB:", assigned.Uids["blank-0"], "| Process took:", endTime.Sub(startTime))
-
-		//time.Sleep(time.Second * 3)
+		fmt.Println(itemHistogram.ItemName, "- inserted into DB:", assigned.Uids["blank-0"], "| Process took:", endTime.Sub(timestamp))
 	}
 
-	fmt.Println("************************* Process done *************************")
+	fmt.Printf("************************* Process done %v *************************", time.Now().Sub(startTime))
 }
 
 func newDgraphClient(ip string) *dgo.Dgraph {
